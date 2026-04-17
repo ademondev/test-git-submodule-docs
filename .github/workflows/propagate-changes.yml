@@ -1,9 +1,9 @@
 name: Propagate docs changes to all repos
 
-# When docs are updated, automatically push those changes to all repos that use them
 on:
   push:
     branches: [main]
+    paths: ['*.md']  # Only trigger when markdown files in root change
   workflow_dispatch:
 
 jobs:
@@ -22,46 +22,36 @@ jobs:
 
       - name: Propagate to backend repository
         run: |
-          # Clone backend repo
           git clone https://x-access-token:${{ secrets.DOCS_SYNC_TOKEN }}@github.com/ademondev/test-git-submodule-back.git backend-repo
           
-          # Copy docs files to backend
-          cp *.md backend-repo/docs/ 2>/dev/null || echo "No markdown files"
+          # The docs live in docs/ subfolder in backend
+          cp *.md backend-repo/docs/
           
           cd backend-repo
           
-          # Check if there are changes
           if ! git diff --quiet docs/; then
             git add docs/
-            git commit -m "Auto-update docs from docs repository
-
-            Docs updated: $(date)
-            Source commit: ${{ github.sha }}"
+            git commit -m "docs: auto-update from docs repository [skip ci]"
             git push origin main
-            echo "✅ Updated backend repository"
+            echo "✅ Updated backend"
           else
-            echo "ℹ️ Backend docs already up to date"
+            echo "ℹ️ Backend already up to date"
           fi
 
       - name: Propagate to frontend repository
         run: |
-          # Clone frontend repo
           git clone https://x-access-token:${{ secrets.DOCS_SYNC_TOKEN }}@github.com/ademondev/test-git-submodule-front.git frontend-repo
           
-          # Copy docs files to frontend
-          cp *.md frontend-repo/docs/ 2>/dev/null || echo "No markdown files"
+          # The docs live in docs/ subfolder in frontend
+          cp *.md frontend-repo/docs/
           
           cd frontend-repo
           
-          # Check if there are changes
           if ! git diff --quiet docs/; then
             git add docs/
-            git commit -m "Auto-update docs from docs repository
-
-            Docs updated: $(date)
-            Source commit: ${{ github.sha }}"
+            git commit -m "docs: auto-update from docs repository [skip ci]"
             git push origin main
-            echo "✅ Updated frontend repository"
+            echo "✅ Updated frontend"
           else
-            echo "ℹ️ Frontend docs already up to date"
+            echo "ℹ️ Frontend already up to date"
           fi
