@@ -133,3 +133,33 @@ Deletes multiple users by their IDs.
   "deleted": 2
 }
 ```
+
+## Pagination
+
+### GET /api/users?page=1&limit=10
+Returns a paginated list of users.
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Number of users per page (default: 10, max: 100)
+
+**Response:**
+```json
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 25,
+    "pages": 3,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```

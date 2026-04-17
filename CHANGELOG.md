@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 1.4.0 (2026-04-17)
+
+### Added
+- Pagination support for GET /api/users endpoint
+- Query parameters: page, limit  
+- Pagination metadata in responses
+- Support for up to 100 users per page
+
 ## Version 1.3.0 (2026-04-17)
 
 ### Added
