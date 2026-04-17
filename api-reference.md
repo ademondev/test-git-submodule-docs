@@ -72,3 +72,64 @@ Returns detailed system status information.
   "memory_usage": "45%"
 }
 ```
+
+## Batch Operations
+
+### POST /api/users/batch
+Creates multiple users in a single request.
+
+**Request Body:**
+```json
+{
+  "users": [
+    {
+      "name": "John Doe",
+      "email": "john@example.com"
+    },
+    {
+      "name": "Jane Smith", 
+      "email": "jane@example.com"
+    }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Created 2 users",
+  "users": [
+    {
+      "id": 4,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "created": "2026-04-17T10:00:00Z"
+    },
+    {
+      "id": 5,
+      "name": "Jane Smith",
+      "email": "jane@example.com", 
+      "created": "2026-04-17T10:00:01Z"
+    }
+  ]
+}
+```
+
+### DELETE /api/users/batch
+Deletes multiple users by their IDs.
+
+**Request Body:**
+```json
+{
+  "ids": [1, 2, 3]
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Deleted 2 users",
+  "requested": 3,
+  "deleted": 2
+}
+```

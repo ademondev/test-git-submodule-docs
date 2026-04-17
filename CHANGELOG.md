@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 1.3.0 (2026-04-17)
+
+### Added
+- Batch user operations (POST /api/users/batch)
+- Batch user deletion (DELETE /api/users/batch)
+- Support for creating/deleting multiple users in single requests
+
 ## Version 1.2.0 (2026-04-17)
 
 ### Added
