@@ -1,0 +1,67 @@
+name: Propagate docs changes to all repos
+
+# When docs are updated, automatically push those changes to all repos that use them
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  propagate-to-repos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout docs repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.DOCS_SYNC_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+
+      - name: Propagate to backend repository
+        run: |
+          # Clone backend repo
+          git clone https://x-access-token:${{ secrets.DOCS_SYNC_TOKEN }}@github.com/ademondev/test-git-submodule-back.git backend-repo
+          
+          # Copy docs files to backend
+          cp *.md backend-repo/docs/ 2>/dev/null || echo "No markdown files"
+          
+          cd backend-repo
+          
+          # Check if there are changes
+          if ! git diff --quiet docs/; then
+            git add docs/
+            git commit -m "Auto-update docs from docs repository
+
+            Docs updated: $(date)
+            Source commit: ${{ github.sha }}"
+            git push origin main
+            echo "✅ Updated backend repository"
+          else
+            echo "ℹ️ Backend docs already up to date"
+          fi
+
+      - name: Propagate to frontend repository
+        run: |
+          # Clone frontend repo
+          git clone https://x-access-token:${{ secrets.DOCS_SYNC_TOKEN }}@github.com/ademondev/test-git-submodule-front.git frontend-repo
+          
+          # Copy docs files to frontend
+          cp *.md frontend-repo/docs/ 2>/dev/null || echo "No markdown files"
+          
+          cd frontend-repo
+          
+          # Check if there are changes
+          if ! git diff --quiet docs/; then
+            git add docs/
+            git commit -m "Auto-update docs from docs repository
+
+            Docs updated: $(date)
+            Source commit: ${{ github.sha }}"
+            git push origin main
+            echo "✅ Updated frontend repository"
+          else
+            echo "ℹ️ Frontend docs already up to date"
+          fi
