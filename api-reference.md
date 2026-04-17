@@ -59,3 +59,16 @@ Deletes a user by ID.
   "message": "User deleted successfully"
 }
 ```
+
+### GET /api/status
+Returns detailed system status information.
+
+**Response:**
+```json
+{
+  "status": "operational",
+  "uptime": 3600,
+  "database": "connected",
+  "memory_usage": "45%"
+}
+```
