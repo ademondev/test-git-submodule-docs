@@ -9,6 +9,7 @@ on:
 jobs:
   propagate-to-repos:
     runs-on: ubuntu-latest
+    # Never skip - this must always run when docs change, regardless of who made the commit
     steps:
       - name: Checkout docs repository
         uses: actions/checkout@v4
@@ -24,14 +25,14 @@ jobs:
         run: |
           git clone https://x-access-token:${{ secrets.DOCS_SYNC_TOKEN }}@github.com/ademondev/test-git-submodule-back.git backend-repo
           
-          # The docs live in docs/ subfolder in backend
           cp *.md backend-repo/docs/
           
           cd backend-repo
           
           if ! git diff --quiet docs/; then
             git add docs/
-            git commit -m "docs: auto-update from docs repository [skip ci]"
+            # [from-docs] tag tells backend/frontend sync-docs action to skip (prevents loop)
+            git commit -m "docs: auto-update from docs repository [from-docs]"
             git push origin main
             echo "✅ Updated backend"
           else
@@ -42,14 +43,14 @@ jobs:
         run: |
           git clone https://x-access-token:${{ secrets.DOCS_SYNC_TOKEN }}@github.com/ademondev/test-git-submodule-front.git frontend-repo
           
-          # The docs live in docs/ subfolder in frontend
           cp *.md frontend-repo/docs/
           
           cd frontend-repo
           
           if ! git diff --quiet docs/; then
             git add docs/
-            git commit -m "docs: auto-update from docs repository [skip ci]"
+            # [from-docs] tag tells backend/frontend sync-docs action to skip (prevents loop)
+            git commit -m "docs: auto-update from docs repository [from-docs]"
             git push origin main
             echo "✅ Updated frontend"
           else
